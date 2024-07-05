@@ -12,8 +12,8 @@ Players = cloneref(game:GetService("Players"))
 if not game:IsLoaded() then
     local notLoaded = Instance.new("Message")
     notLoaded.Parent = COREGUI
-    notLoaded.Text = "Infinite Yield is waiting for the game to load"
-    game.Loaded:Wait()
+    notLoaded.Text = "Game wasn't loaded but dev mode bypassed it"
+    task.wait(2)
     notLoaded:Destroy()
 end
 
