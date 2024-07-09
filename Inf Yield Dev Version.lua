@@ -7920,6 +7920,7 @@ addcmd('hesp',{},function(args, speaker)
 			end
 		else
 			notify('HESP','Disable esp (noesp) before using hesp')
+		end
 	else
 		notify('HESP','Disable chams (nochams) before using hesp')
 	end
