@@ -5646,7 +5646,7 @@ function HESP(char)
 					a.ZIndex = 10
 					a.Size = n.Size
 					a.Transparency = espTransparency
-					a.Color = plr.TeamColor
+					a.Color = BrickColor.new("White")
 				end
 			end
 			if char and char:FindFirstChild('Head') then
@@ -7898,11 +7898,15 @@ end)
 
 addcmd('esp',{},function(args, speaker)
 	if not CHMSenabled then
-		ESPenabled = true
-		for i,v in pairs(Players:GetPlayers()) do
-			if v.Name ~= speaker.Name then
-				ESP(v)
+		if not ESPenabled then
+			ESPenabled = true
+			for i,v in pairs(Players:GetPlayers()) do
+				if v.Name ~= speaker.Name then
+					ESP(v)
+				end
 			end
+		else
+			notify('ESP','Disable esp (noesp) before using esp again')
 		end
 	else
 		notify('ESP','Disable chams (nochams) before using esp')
