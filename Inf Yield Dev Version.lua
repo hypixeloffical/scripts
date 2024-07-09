@@ -4460,7 +4460,9 @@ CMDs[#CMDs + 1] = {NAME = 'safechat', DESC = 'Enables safe chat'}
 CMDs[#CMDs + 1] = {NAME = 'nosafechat / disablesafechat', DESC = 'Disables safechat'}
 CMDs[#CMDs + 1] = {NAME = '', DESC = ''}
 CMDs[#CMDs + 1] = {NAME = 'esp', DESC = 'View all players and their status'}
+CMDs[#CMDs + 1] = {NAME = 'hesp', DESC = 'View all characters and their status'}
 CMDs[#CMDs + 1] = {NAME = 'noesp / unesp', DESC = 'Removes esp'}
+CMDs[#CMDs + 1] = {NAME = 'nohesp / unhesp', DESC = 'Removes hesp'}
 CMDs[#CMDs + 1] = {NAME = 'esptransparency [number]', DESC = 'Changes the transparency of esp related commands'}
 CMDs[#CMDs + 1] = {NAME = 'partesp [part name]', DESC = 'Highlights a part'}
 CMDs[#CMDs + 1] = {NAME = 'unpartesp / nopartesp [part name]', DESC = 'removes partesp'}
@@ -5612,6 +5614,69 @@ function ESP(plr)
 					else
 						teamChange:Disconnect()
 						addedFunc:Disconnect()
+						espLoopFunc:Disconnect()
+					end
+				end
+				espLoopFunc = RunService.RenderStepped:Connect(espLoop)
+			end
+		end
+	end)
+end
+
+function HESP(char)
+	task.spawn(function()
+		for i,v in pairs(COREGUI:GetChildren()) do
+			if v.Name == char.Name..'_HESP' then
+				v:Destroy()
+			end
+		end
+		wait()
+		if char.Name ~= Players.LocalPlayer.Name and not COREGUI:FindFirstChild(char.Name..'_HESP') then
+			local ESPholder = Instance.new("Folder")
+			ESPholder.Name = char.Name..'_HESP'
+			ESPholder.Parent = COREGUI
+			repeat wait(1) until char and getRoot(char) and char:FindFirstChildOfClass("Humanoid")
+			for b,n in pairs (char:GetChildren()) do
+				if (n:IsA("BasePart")) then
+					local a = Instance.new("BoxHandleAdornment")
+					a.Name = plr.Name
+					a.Parent = ESPholder
+					a.Adornee = n
+					a.AlwaysOnTop = true
+					a.ZIndex = 10
+					a.Size = n.Size
+					a.Transparency = espTransparency
+					a.Color = plr.TeamColor
+				end
+			end
+			if char and char:FindFirstChild('Head') then
+				local BillboardGui = Instance.new("BillboardGui")
+				local TextLabel = Instance.new("TextLabel")
+				BillboardGui.Adornee = char.Head
+				BillboardGui.Name = char.Name
+				BillboardGui.Parent = ESPholder
+				BillboardGui.Size = UDim2.new(0, 100, 0, 150)
+				BillboardGui.StudsOffset = Vector3.new(0, 1, 0)
+				BillboardGui.AlwaysOnTop = true
+				TextLabel.Parent = BillboardGui
+				TextLabel.BackgroundTransparency = 1
+				TextLabel.Position = UDim2.new(0, 0, 0, -50)
+				TextLabel.Size = UDim2.new(0, 100, 0, 100)
+				TextLabel.Font = Enum.Font.SourceSansSemibold
+				TextLabel.TextSize = 20
+				TextLabel.TextColor3 = Color3.new(1, 1, 1)
+				TextLabel.TextStrokeTransparency = 0
+				TextLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+				TextLabel.Text = 'Name: '..char.Name
+				TextLabel.ZIndex = 10
+				local espLoopFunc
+				local function espLoop()
+					if COREGUI:FindFirstChild(char.Name..'_HESP') then
+						if char and getRoot(char) and char:FindFirstChildOfClass("Humanoid") and Players.LocalPlayer.Character and getRoot(Players.LocalPlayer.Character) and Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+							local pos = math.floor((getRoot(Players.LocalPlayer.Character).Position - getRoot(char).Position).magnitude)
+							TextLabel.Text = 'Name: '..char.Name..' | Health: '..round(char:FindFirstChildOfClass('Humanoid').Health, 1)..' | Studs: '..pos
+						end
+					else
 						espLoopFunc:Disconnect()
 					end
 				end
@@ -7844,10 +7909,35 @@ addcmd('esp',{},function(args, speaker)
 	end
 end)
 
+addcmd('hesp',{},function(args, speaker)
+	if not CHMSenabled then
+		if not ESPenabled then
+			ESPenabled = true
+			for i,v in pairs(workspace:GetDescendants()) do
+				if v.Parent.Name ~= speaker.Name and v:IsA("Humanoid") then
+					HESP(v.Parent)
+				end
+			end
+		else
+			notify('HESP','Disable esp (noesp) before using hesp')
+	else
+		notify('HESP','Disable chams (nochams) before using hesp')
+	end
+end)
+
 addcmd('noesp',{'unesp'},function(args, speaker)
 	ESPenabled = false
 	for i,c in pairs(COREGUI:GetChildren()) do
 		if string.sub(c.Name, -4) == '_ESP' then
+			c:Destroy()
+		end
+	end
+end)
+
+addcmd('nohesp',{'unhesp'},function(args, speaker)
+	ESPenabled = false
+	for i,c in pairs(COREGUI:GetChildren()) do
+		if string.sub(c.Name, -4) == '_HESP' then
 			c:Destroy()
 		end
 	end
