@@ -5639,7 +5639,7 @@ function HESP(char)
 			for b,n in pairs (char:GetChildren()) do
 				if (n:IsA("BasePart")) then
 					local a = Instance.new("BoxHandleAdornment")
-					a.Name = plr.Name
+					a.Name = char.Name
 					a.Parent = ESPholder
 					a.Adornee = n
 					a.AlwaysOnTop = true
