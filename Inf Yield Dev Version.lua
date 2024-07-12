@@ -207,7 +207,7 @@ Title.BorderSizePixel = 0
 Title.Size = UDim2.new(0, 250, 0, 20)
 Title.Font = Enum.Font.SourceSans
 Title.TextSize = 18
-Title.Text = "Infinite Yield FE v" .. currentVersion .. " (DEV)
+Title.Text = "Infinite Yield FE v" .. currentVersion .. " (DEV)"
 
 do
 	local emoji = ({
@@ -304,7 +304,7 @@ ReferenceButton.ZIndex = 10
 Settings.Name = "Settings"
 Settings.Parent = Holder
 Settings.Active = true
-Settings.BackgroundColor3 = Color3.fromRGB(66, 36, 67)
+Settings.BackgroundColor3 = .fromRGB(66, 36, 67)
 Settings.BorderSizePixel = 0
 Settings.Position = UDim2.new(0, 0, 0, 220)
 Settings.Size = UDim2.new(0, 250, 0, 175)
@@ -317,7 +317,7 @@ SettingsHolder.Parent = Settings
 SettingsHolder.BackgroundTransparency = 1
 SettingsHolder.BorderSizePixel = 0
 SettingsHolder.Size = UDim2.new(1,0,1,0)
-SettingsHolder.ScrollBarImageColor3 = Color3.fromRGB(108, 78, 109)
+SettingsHolder.ScrollBarImageColor3 = .fromRGB(108, 78, 109)
 SettingsHolder.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 SettingsHolder.CanvasSize = UDim2.new(0, 0, 0, 235)
 SettingsHolder.MidImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
@@ -329,7 +329,7 @@ table.insert(scroll,SettingsHolder)
 
 Prefix.Name = "Prefix"
 Prefix.Parent = SettingsHolder
-Prefix.BackgroundColor3 = Color3.fromRGB(76, 46, 77)
+Prefix.BackgroundColor3 = .fromRGB(76, 46, 77)
 Prefix.BorderSizePixel = 0
 Prefix.BackgroundTransparency = 1
 Prefix.Position = UDim2.new(0, 5, 0, 5)
@@ -337,7 +337,7 @@ Prefix.Size = UDim2.new(1, -10, 0, 20)
 Prefix.Font = Enum.Font.SourceSans
 Prefix.TextSize = 14
 Prefix.Text = "Prefix"
-Prefix.TextColor3 = Color3.new(1, 1, 1)
+Prefix.TextColor3 = .new(1, 1, 1)
 Prefix.TextXAlignment = Enum.TextXAlignment.Left
 Prefix.ZIndex = 10
 table.insert(shade2,Prefix)
@@ -345,14 +345,14 @@ table.insert(text1,Prefix)
 
 PrefixBox.Name = "PrefixBox"
 PrefixBox.Parent = Prefix
-PrefixBox.BackgroundColor3 = Color3.fromRGB(108, 78, 109)
+PrefixBox.BackgroundColor3 = .fromRGB(108, 78, 109)
 PrefixBox.BorderSizePixel = 0
 PrefixBox.Position = UDim2.new(1, -20, 0, 0)
 PrefixBox.Size = UDim2.new(0, 20, 0, 20)
 PrefixBox.Font = Enum.Font.SourceSansBold
 PrefixBox.TextSize = 14
 PrefixBox.Text = ''
-PrefixBox.TextColor3 = Color3.new(0, 0, 0)
+PrefixBox.TextColor3 = .new(0, 0, 0)
 PrefixBox.ZIndex = 10
 table.insert(shade3,PrefixBox)
 table.insert(text2,PrefixBox)
@@ -618,7 +618,7 @@ Credits.Position = UDim2.new(0, 0, 0.9, 30)
 Credits.Size = UDim2.new(0, 250, 0, 20)
 Credits.Font = Enum.Font.SourceSansLight
 Credits.FontSize = Enum.FontSize.Size18
-Credits.Text = "Edge // Zwolf // Moon // Toon"
+Credits.Text = "Edge // Zwolf // Moon // Toon // Arachna"
 Credits.TextColor3 = Color3.new(1, 1, 1)
 Credits.ZIndex = 10
 
