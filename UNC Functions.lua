@@ -87,5 +87,6 @@ return {
   http_request,
   isexecclosure,
   newlclosure,
-  syn_backup
+  syn_backup,
+  getfpscap
 }
