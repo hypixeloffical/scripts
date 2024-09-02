@@ -13,6 +13,17 @@ local function try(func, ...)
     return success
 end
 
+local consoleTab = (" "):rep(12)
+local output = {}
+
+local function out(data)
+    table.insert(output, tostring(data:gsub("\n", "\n" .. consoleTab)))
+end
+
+local function outAll()
+    print(table.concat(output, "\n" .. consoleTab))
+end
+
 local function invert(t: {any}): {any}
     local result = {}
     for i,v in pairs(t) do
@@ -46,6 +57,8 @@ local function isSame(table1, table2)
     return true
 end
 
+
+
 p["None"] = try(function() return game.Name end)
 p["Plugin"] = try(function() return game:GetService("CoreGui").Name end)
 p["LocalUser"] = try(function() return game.DataCost end)
@@ -53,8 +66,6 @@ p["WritePlayer"] = try(Instance.new, "Player")
 p["RobloxScript"] = try(function() return game:GetService("CorePackages").Name end)
 p["RobloxEngine"] = try(function() return Instance.new("SurfaceAppearance").TexturePack end)
 p["NotAccessible"] = try(function() Instance.new("MeshPart").MeshId = "" end)
-
-
 
 local identity = -1
 
@@ -102,11 +113,17 @@ else
 end
 
 local detected = message
+
+local getthreadidentity = getthreadidentity or function() return nil end
+local thread = getthreadidentity()
+
+local spoofed = thread and thread ~= detected
+
 print(("\n"):rep(500))
-print(`{#candidates} candidates found.`)
+out(`{#candidates} candidates found.`)
 
 if #candidates == 0 then
-    print("Error. 0 candidates.")
+    out("Error. 0 candidates.")
 elseif #candidates == 1 then
     identity = candidates[1]
 elseif #candidates > 1 then
@@ -117,15 +134,18 @@ end
 
 if identity ~= -1 then
     if identity == detected then
-        print(`✅ Your executor's identity is {identity}. Matches with printidentity() ✅`)
+        out(`✅ Your executor's identity is {identity}. Matches with printidentity() ✅`)
     else
-        if setthreadidentity then
-            print(`❎ Your executor's identity is {identity}. Doesn't match with printidentity(). \nNote: Your executor is probably spoofing its identity or setthreadidentity() may have been used.`)
+        if spoofed then
+            out(`❎ Your executor's identity is {identity}. Doesn't match with printidentity(). \n{consoleTab}Note: setthreadidentity() have been used.`) 
         else
-            print(`❎ Your executor's identity is {identity}. Doesn't match with printidentity(). \nNote: Your executor is probably spoofing its identity.`)
+            out(`❎ Your executor's identity is {identity}. Doesn't match with printidentity(). \n{consoleTab}Note: Your executor is probably spoofing its identity.`)
         end
     end
 else
-    print(`❌ Executor identity not found. Using printidentity...`)
-    printidentity()
+    out(`❌ Executor identity not found. But printidentity() returns {detected}...\n`)
 end
+
+out(`\nExecutor capabilies (for 🤓s): {table.concat(inverted, ", ")}`)
+
+outAll()
