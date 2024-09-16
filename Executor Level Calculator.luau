@@ -77,10 +77,9 @@ local requireds = {
     {"None", "Plugin", "LocalUser"},
     {"None", "Plugin"},
     {"None", "Plugin", "LocalUser", "RobloxScript"},
-    {"None", "Plugin", "RobloxPlace", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine"},
-    {"None", "Plugin", "RobloxPlace", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine"},
-    {"WritePlayer", "RobloxScript"},
-    {"None", "Plugin", "RobloxPlace", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine", "NotAccessible"}
+    {"None", "Plugin", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine"},
+    {"None", "Plugin", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine", "NotAccessible"},
+    {"WritePlayer", "RobloxScript"}
 }
 
 local candidates = {}
@@ -115,9 +114,9 @@ end
 local detected = message
 
 local getthreadidentity = getthreadidentity or function() return nil end
-local thread = getthreadidentity()
+local thread = getthreadidentity
 
-local spoofed = thread and thread ~= detected
+local spoofed = thread and thread() ~= detected
 
 print(("\n"):rep(500))
 out(`{#candidates} candidates found.`)
@@ -137,7 +136,7 @@ if identity ~= -1 then
         out(`✅ Your executor's identity is {identity}. Matches with printidentity() ✅`)
     else
         if spoofed then
-            out(`❎ Your executor's identity is {identity}. Doesn't match with printidentity(). \n{consoleTab}Note: setthreadidentity() have been used.`) 
+            out(`❎ Your executor's identity is {identity}. Doesn't match with printidentity(). \n{consoleTab}Note: setthreadidentity() have been used.`)
         else
             out(`❎ Your executor's identity is {identity}. Doesn't match with printidentity(). \n{consoleTab}Note: Your executor is probably spoofing its identity.`)
         end
