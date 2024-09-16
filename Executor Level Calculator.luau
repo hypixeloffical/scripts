@@ -20,13 +20,14 @@ local function out(data)
     local str = tostring(data:gsub("\n", "\n" .. consoleTab))
     local maxLineLength = 121
     local outputStr = ""
+    local i = 1
 
-    for line in str:gmatch("[^\n]+") do
-        while #line > maxLineLength do
-            outputStr = outputStr .. line:sub(1, maxLineLength) .. "\n" .. consoleTab
-            line = line:sub(maxLineLength + 1)
+    while i <= #str do
+        if (i - 1) % maxLineLength == 0 and i ~= 1 then
+            outputStr = outputStr .. "\n" .. consoleTab
         end
-        outputStr = outputStr .. line .. "\n"
+        outputStr = outputStr .. str:sub(i, i)
+        i = i + 1
     end
 
     table.insert(output, outputStr)
