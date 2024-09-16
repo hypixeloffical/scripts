@@ -17,7 +17,19 @@ local consoleTab = (" "):rep(12)
 local output = {}
 
 local function out(data)
-    table.insert(output, tostring(data:gsub("\n", "\n" .. consoleTab)))
+    local str = tostring(data:gsub("\n", "\n" .. consoleTab))
+    local maxLineLength = 121
+    local outputStr = ""
+
+    for line in str:gmatch("[^\n]+") do
+        while #line > maxLineLength do
+            outputStr = outputStr .. line:sub(1, maxLineLength) .. "\n" .. consoleTab
+            line = line:sub(maxLineLength + 1)
+        end
+        outputStr = outputStr .. line .. "\n"
+    end
+
+    table.insert(output, outputStr)
 end
 
 local function outAll()
@@ -42,8 +54,6 @@ local function eliminate(t: {any}): {any}
     return result
 end
 
-
-
 local function isSame(table1, table2)
     if #table1 ~= #table2 then
         return false
@@ -57,15 +67,13 @@ local function isSame(table1, table2)
     return true
 end
 
-
-
 p["None"] = try(function() return game.Name end)
-p["Plugin"] = try(function() return game:GetService("CoreGui").Name end)
+p["Plugin"] = try(function() return #game:GetService("CoreGui"):GetChildren() end)
 p["LocalUser"] = try(function() return game.DataCost end)
-p["WritePlayer"] = try(Instance.new, "Player")
+p["WritePlayer"] = not try(Instance.new, "Player", workspace)
 p["RobloxScript"] = try(function() return game:GetService("CorePackages").Name end)
 p["RobloxEngine"] = try(function() return Instance.new("SurfaceAppearance").TexturePack end)
-p["NotAccessible"] = try(function() Instance.new("MeshPart").MeshId = "" end)
+p["NotAccessible"] = try(function() Instance.new("MeshPart").MeshId = "rbxassetid://10124180584" end)
 
 local identity = -1
 
