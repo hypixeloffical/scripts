@@ -69,12 +69,12 @@ local function isSame(table1, table2)
 end
 
 p["None"] = try(function() return game.Name end)
-p["Plugin"] = try(function() return #game:GetService("CoreGui"):GetChildren() end)
+p["Plugin"] = try(function() return #game:GetService("CoreGui"):GetChildren() end) and try(function() return workspace.RobloxLocked end)
 p["LocalUser"] = try(function() return game.DataCost end)
 p["WritePlayer"] = not try(Instance.new, "Player", workspace)
-p["RobloxScript"] = try(function() return game:GetService("CorePackages").Name end)
-p["RobloxEngine"] = try(function() return Instance.new("SurfaceAppearance").TexturePack end)
-p["NotAccessible"] = try(function() Instance.new("MeshPart").MeshId = "rbxassetid://10124180584" end)
+p["RobloxScript"] = try(function() return game:GetService("CorePackages").Name end) and try(function() return game:GetService("CoreGui").SelectionImageObject end)
+p["RobloxEngine"] = try(function() return Instance.new("SurfaceAppearance").TexturePack end) and try(function() return game:GetService("CSGDictionaryService").Name end)
+p["NotAccessible"] = try(function() Instance.new("MeshPart").MeshId = "rbxassetid://10124180584" end) and try(function() game:GetService("Chat").LoadDefaultChat = game:GetService("Chat").LoadDefaultChat end)
 
 local identity = -1
 
