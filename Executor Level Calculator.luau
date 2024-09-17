@@ -99,7 +99,6 @@ for i,v in pairs(requireds) do
     table.sort(inverted, sorter)
 
     if isSame(v, inverted) then
-        print("insert")
         table.insert(candidates, tostring(tonumber(i) - 1))
     end
 end
