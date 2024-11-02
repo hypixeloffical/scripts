@@ -79,16 +79,17 @@ p["NotAccessible"] = try(function() Instance.new("MeshPart").MeshId = "rbxasseti
 local identity = -1
 
 local requireds = {
-    {"None"},
-    {"None", "Plugin", "LocalUser"},
-    {"None"},
-    {"None", "Plugin", "LocalUser", "RobloxScript"},
-    {"None", "Plugin", "LocalUser"},
-    {"None", "Plugin"},
-    {"None", "Plugin", "LocalUser", "RobloxScript"},
-    {"None", "Plugin", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine"},
-    {"None", "Plugin", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine", "NotAccessible"},
-    {"WritePlayer", "RobloxScript"}
+    [0] = {"None"},
+    [1] = {"None", "Plugin", "LocalUser"},
+    [2] = {"None"},
+    [3] = {"None", "Plugin", "LocalUser", "RobloxScript"},
+    ["3 (Altered)"] = {"None", "Plugin", "LocalUser", "RobloxScript"},
+    [4] = {"None", "Plugin", "LocalUser"},
+    [5] = {"None", "Plugin"},
+    [6] = {"None", "Plugin", "LocalUser", "RobloxScript"},
+    [7] = {"None", "Plugin", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine"},
+    [8] = {"None", "Plugin", "LocalUser", "WritePlayer", "RobloxScript", "RobloxEngine", "NotAccessible"},
+    [9] = {"WritePlayer", "RobloxScript"}
 }
 
 local candidates = {}
@@ -126,7 +127,7 @@ local thread = getthreadidentity
 
 local spoofed = thread and thread() ~= detected
 
-print(("\n"):rep(500))
+print(("\n"):rep(1000))
 out(`{#candidates} candidates found.`)
 
 if #candidates == 0 then
