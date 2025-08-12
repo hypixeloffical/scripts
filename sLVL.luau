@@ -63,7 +63,8 @@ local identityRequirements = {
     [7]  = {Plugin=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
     [8]  = {
         {Plugin=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
-        {OpenCloud=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true}
+        {OpenCloud=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
+        {Plugin=true, OpenCloud=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true}
     },
     [9]  = {WritePlayer=true, RobloxScript=true},
     [10] = {Plugin=true, LocalUser=true, Assistant=true},
