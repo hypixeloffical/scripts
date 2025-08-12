@@ -63,15 +63,13 @@ local identityRequirements = {
     [7]  = {Plugin=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
     [8]  = {
         {Plugin=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
-        {OpenCloud=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
-        {Plugin=true, OpenCloud=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true}
+        {OpenCloud=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true}
     },
     [9]  = {WritePlayer=true, RobloxScript=true},
     [10] = {Plugin=true, LocalUser=true, Assistant=true},
     [11] = {OpenCloud=true},
     [12] = {InternalTest=true}
 }
-
 
 local actualCapsSet = {}
 local actualCapsList = {}
@@ -84,35 +82,39 @@ for cap, success in pairs(capabilities) do
     end
 end
 
+local function findCandidates(capsSet, capsCount)
+    local foundCandidates = {}
+    for id, reqs in pairs(identityRequirements) do
+        local setsToTest = {}
+        if type(reqs[1]) == "table" then
+            setsToTest = reqs
+        else
+            table.insert(setsToTest, reqs)
+        end
 
-local candidates = {}
-for id, reqs in pairs(identityRequirements) do
-    local setsToTest = {}
-    
-    if type(reqs[1]) == "table" then
-        setsToTest = reqs
-    else
-        table.insert(setsToTest, reqs)
-    end
-
-    for _, reqSet in ipairs(setsToTest) do
-        local reqCount = 0
-        for _ in pairs(reqSet) do reqCount = reqCount + 1 end
-        if reqCount == actualCapsCount then
-            local isMatch = true
-            for cap in pairs(reqSet) do
-                if not actualCapsSet[cap] then
-                    isMatch = false
+        for _, reqSet in ipairs(setsToTest) do
+            local reqCount = 0
+            for _ in pairs(reqSet) do reqCount = reqCount + 1 end
+            
+            if reqCount == capsCount then
+                local isMatch = true
+                for cap in pairs(reqSet) do
+                    if not capsSet[cap] then
+                        isMatch = false
+                        break
+                    end
+                end
+                if isMatch then
+                    table.insert(foundCandidates, id)
                     break
                 end
             end
-            if isMatch then
-                table.insert(candidates, id)
-                break
-            end
         end
     end
+    return foundCandidates
 end
+
+local candidates = findCandidates(actualCapsSet, actualCapsCount)
 
 printidentity()
 task.wait(0.1) 
@@ -129,20 +131,42 @@ end
 
 local getthreadidentity = getthreadidentity or function() return nil end
 local isSpoofed = getthreadidentity() and getthreadidentity() ~= detectedIdentity
-
 local finalIdentity = -1
-if #candidates == 1 then
-    finalIdentity = candidates[1]
-elseif #candidates > 1 and detectedIdentity and table.find(candidates, detectedIdentity) then
-    
-    finalIdentity = detectedIdentity
+local isSpoofedViaOpenCloud = false
+
+if actualCapsSet.OpenCloud then
+    local tempCapsSet = {}
+    for cap, _ in pairs(actualCapsSet) do
+        if cap ~= "OpenCloud" then
+            tempCapsSet[cap] = true
+        end
+    end
+    local tempCapsCount = actualCapsCount - 1
+
+    local lowerCandidates = findCandidates(tempCapsSet, tempCapsCount)
+    if #lowerCandidates == 1 and lowerCandidates[1] < 8 then
+        isSpoofedViaOpenCloud = true
+        finalIdentity = 8 
+    end
+end
+
+if finalIdentity == -1 then
+    if #candidates == 1 then
+        finalIdentity = candidates[1]
+    elseif #candidates > 1 and detectedIdentity and table.find(candidates, detectedIdentity) then
+        finalIdentity = detectedIdentity
+    end
 end
 
 local outputLines = {}
 local candidateText = #candidates == 1 and "candidate" or "candidates"
 table.insert(outputLines, string.format("%d %s found.", #candidates, candidateText))
 
-if finalIdentity ~= -1 then
+if isSpoofedViaOpenCloud then
+    local finalName = identityNames[8]
+    local reason = "Note: OpenCloud capability appears to be spoofed onto a lower identity."
+    table.insert(outputLines, string.format("❎ Your executor's real identity is %d (%s), but it is spoofed.\n    %s", finalIdentity, finalName, reason))
+elseif finalIdentity ~= -1 then
     local finalName = identityNames[finalIdentity] or "Unknown"
     local detectedName = (detectedIdentity and identityNames[detectedIdentity]) or "N/A"
     
