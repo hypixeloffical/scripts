@@ -19,7 +19,7 @@ local capabilities = {
     RobloxScript = try(function() return game:GetService("CorePackages").Name and game:GetService("CoreGui").SelectionImageObject end),
     RobloxEngine = try(function() return Instance.new("SurfaceAppearance").TexturePack and game:GetService("CSGDictionaryService").Name end),
     NotAccessible = try(function() Instance.new("MeshPart").MeshId = "rbxassetid://10124180584" end) and try(function() game:GetService("Chat").LoadDefaultChat = game:GetService("Chat").LoadDefaultChat end),
-    Assistant = try(function() game:GetService("StreamingService") end) and try(function()
+    Assistant = try(function() return game:GetService("StreamingService") end) and try(function()
         local _, errMsg = pcall(game:GetService("StreamingService").ExecuteCommandAsync, game:GetService("StreamingService"))
         return not string.find(tostring(errMsg), "lacking permission")
     end),
@@ -61,12 +61,17 @@ local identityRequirements = {
     [5]  = {Plugin=true},
     [6]  = {Plugin=true, LocalUser=true, RobloxScript=true, Assistant=true},
     [7]  = {Plugin=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
-    [8]  = {Plugin=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true}, -- same as 7
+    [8]  = {
+        {Plugin=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
+        {OpenCloud=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true},
+        {Plugin=true, OpenCloud=true, LocalUser=true, WritePlayer=true, RobloxScript=true, RobloxEngine=true, NotAccessible=true}
+    },
     [9]  = {WritePlayer=true, RobloxScript=true},
     [10] = {Plugin=true, LocalUser=true, Assistant=true},
     [11] = {OpenCloud=true},
     [12] = {InternalTest=true}
 }
+
 
 local actualCapsSet = {}
 local actualCapsList = {}
@@ -79,27 +84,38 @@ for cap, success in pairs(capabilities) do
     end
 end
 
-local candidates = {}
-for id, reqSet in pairs(identityRequirements) do
-    local reqCount = 0
-    for _ in pairs(reqSet) do reqCount = reqCount + 1 end
 
-    if reqCount == actualCapsCount then
-        local isMatch = true
-        for cap in pairs(reqSet) do
-            if not actualCapsSet[cap] then
-                isMatch = false
+local candidates = {}
+for id, reqs in pairs(identityRequirements) do
+    local setsToTest = {}
+    
+    if type(reqs[1]) == "table" then
+        setsToTest = reqs
+    else
+        table.insert(setsToTest, reqs)
+    end
+
+    for _, reqSet in ipairs(setsToTest) do
+        local reqCount = 0
+        for _ in pairs(reqSet) do reqCount = reqCount + 1 end
+        if reqCount == actualCapsCount then
+            local isMatch = true
+            for cap in pairs(reqSet) do
+                if not actualCapsSet[cap] then
+                    isMatch = false
+                    break
+                end
+            end
+            if isMatch then
+                table.insert(candidates, id)
                 break
             end
-        end
-        if isMatch then
-            table.insert(candidates, id)
         end
     end
 end
 
 printidentity()
-task.wait(0.1)
+task.wait(0.1) 
 
 local logHistory = game:GetService('LogService'):GetLogHistory()
 local detectedIdentity
@@ -118,6 +134,7 @@ local finalIdentity = -1
 if #candidates == 1 then
     finalIdentity = candidates[1]
 elseif #candidates > 1 and detectedIdentity and table.find(candidates, detectedIdentity) then
+    
     finalIdentity = detectedIdentity
 end
 
